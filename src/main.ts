@@ -1,4 +1,4 @@
-import { createApp, ref, } from 'vue'
+import { createApp, ref, watch, } from 'vue'
 import './style.css'
 import App from './App.vue'
 import VueFormGenerator from '@dashy-soft/vue-form-generator/src/index';
@@ -14,6 +14,7 @@ export default ({
   model,
   selector,
   onSubmit,
+  onChanged,
 }) => {
 
   formSchema.value = schema;
@@ -23,7 +24,8 @@ export default ({
 	app.component('field-checklist', VueFormGenerator.fieldsLoader.fieldChecklist);
 	app.component('field-dateTimePicker', VueFormGenerator.fieldsLoader.fieldDateTimePicker);
 	app.component('field-label', VueFormGenerator.fieldsLoader.fieldLabel);
-	app.component('field-radios', VueFormGenerator.fieldsLoader.fieldRadios);
+  app.component('field-radios', VueFormGenerator.fieldsLoader.fieldRadios);
+	app.component('field-select', VueFormGenerator.fieldsLoader.fieldSelect);
 
 	app.use(VueFormGenerator);
 	app.mount(selector || '#app');
@@ -31,6 +33,12 @@ export default ({
   emitter.on('submit', () => {
     if(onSubmit) {
       onSubmit(formModel.value);
+    }
+  });
+
+  watch(formModel, () => {
+    if(onChanged) {
+      onChanged(formModel.value);
     }
   });
 
